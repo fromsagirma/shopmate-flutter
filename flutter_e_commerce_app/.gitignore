@@ -1,0 +1,74 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+.vscode/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+flutter_*.png
+linked_*.ds
+unlinked.ds
+unlinked_spec.ds
+
+# Android related
+android/.gradle/
+android/local.properties
+**/android/**/gradle-wrapper.jar
+**/android/key.properties
+*.jks
+
+# iOS/macOS related
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Flutter.framework
+**/ios/Pods/
+**/ios/.symlinks/
+**/macos/Flutter/ephemeral/
+**/*.xcuserstate
+**/ios/Flutter/flutter_export_environment.sh
+**/macos/Flutter/flutter_export_environment.sh
+
+# Web related
+/web/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Coverage
+coverage/
+
+# Environment / secrets
+.env
+.env.*
+
+# Exceptions to above rules
+!**/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json
+!**/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json
