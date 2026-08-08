@@ -21,7 +21,6 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,
-        border: const OutlineInputBorder(),
       ),
       validator: validator,
     );

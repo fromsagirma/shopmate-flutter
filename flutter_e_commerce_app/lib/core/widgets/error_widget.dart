@@ -21,7 +21,9 @@ class CustomErrorWidget extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 16),
