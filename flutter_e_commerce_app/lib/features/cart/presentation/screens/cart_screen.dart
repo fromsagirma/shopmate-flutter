@@ -39,13 +39,22 @@ class CartScreen extends ConsumerWidget {
         skipLoadingOnRefresh: true,
         data: (items) {
           if (items.isEmpty) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('Your cart is empty', style: TextStyle(fontSize: 20, color: Colors.grey)),
+                  Icon(
+                    Icons.shopping_cart_outlined, 
+                    size: 80, 
+                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Your cart is empty', 
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             );
@@ -119,14 +128,15 @@ class _CartTotalBar extends ConsumerWidget {
     final itemCount = ref.watch(cartItemCountProvider);
 
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(24.0),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
             offset: const Offset(0, -4),
-            blurRadius: 8,
+            blurRadius: 12,
           ),
         ],
       ),
@@ -144,8 +154,8 @@ class _CartTotalBar extends ConsumerWidget {
                 ),
                 Text(
                   PriceFormatter.format(total),
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
+                  style: theme.textTheme.displayLarge?.copyWith(
+                    fontSize: 24,
                     color: theme.colorScheme.primary,
                   ),
                 ),
@@ -159,6 +169,7 @@ class _CartTotalBar extends ConsumerWidget {
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                minimumSize: const Size(120, 56),
               ),
               child: const Text('Checkout', style: TextStyle(fontSize: 16)),
             ),

@@ -61,4 +61,17 @@ class Cart extends _$Cart {
       return _fetchCart();
     });
   }
+
+  Future<void> checkoutItem(int productId) async {
+    if (state.isLoading) return;
+    state = const AsyncLoading<List<CartItem>>().copyWithPrevious(state);
+    state = await AsyncValue.guard(() async {
+      // Simulated checkout network delay
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      final removeFromCartUseCase = ref.read(removeFromCartUseCaseProvider);
+      await removeFromCartUseCase(productId);
+      return _fetchCart();
+    });
+  }
 }
