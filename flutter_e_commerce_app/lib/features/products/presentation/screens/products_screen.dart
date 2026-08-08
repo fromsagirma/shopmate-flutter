@@ -69,20 +69,28 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(70),
+          preferredSize: const Size.fromHeight(80),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search products...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
                 filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                fillColor: Theme.of(context).colorScheme.surface,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                ),
               ),
               onChanged: _onSearchChanged,
             ),
@@ -108,6 +116,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                         child: ChoiceChip(
                           label: const Text('All'),
                           selected: selectedCategory == null,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           onSelected: (_) {
                             ref.read(selectedCategoryProvider.notifier).setCategory(null);
                           },
@@ -118,8 +129,13 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: ChoiceChip(
-                        label: Text(category),
+                        label: Text(
+                          category[0].toUpperCase() + category.substring(1), // Capitalize first letter
+                        ),
                         selected: selectedCategory == category,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         onSelected: (_) {
                           ref.read(selectedCategoryProvider.notifier).setCategory(category);
                         },
@@ -146,13 +162,19 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                          Icon(
+                            Icons.search_off, 
+                            size: 64, 
+                            color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5)
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             searchQuery.isNotEmpty 
                               ? 'No results for "$searchQuery"'
                               : (selectedCategory != null ? 'No products in this category' : 'No products found.'),
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.grey[600]),
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ],

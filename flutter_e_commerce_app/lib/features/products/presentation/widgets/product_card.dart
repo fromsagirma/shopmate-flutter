@@ -13,9 +13,11 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Card(
       clipBehavior: Clip.antiAlias,
-      elevation: 2,
+      // Elevation and shape are handled by CardTheme
       child: InkWell(
         onTap: onTap,
         child: Column(
@@ -23,16 +25,22 @@ class ProductCard extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(8.0),
+                color: Colors.white, // Keep white background for product image isolation
+                padding: const EdgeInsets.all(16.0),
                 child: Image.network(
                   product.image,
                   fit: BoxFit.contain,
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                border: Border(
+                  top: BorderSide(color: theme.colorScheme.outline, width: 1),
+                ),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -40,15 +48,18 @@ class ProductCard extends StatelessWidget {
                     product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 14,
+                      height: 1.3,
+                    ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   Text(
                     '\$${product.price.toStringAsFixed(2)}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ],
               ),
