@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../features/auth/presentation/providers/auth_provider.dart';
 import '../../../features/auth/presentation/screens/login_screen.dart';
 import '../../../features/cart/presentation/screens/cart_screen.dart';
+import '../../../features/products/domain/entities/product.dart';
+import '../../../features/products/presentation/screens/product_detail_screen.dart';
 import '../../../features/products/presentation/screens/products_screen.dart';
 import '../../../features/profile/presentation/screens/profile_screen.dart';
 import 'route_names.dart';
@@ -53,6 +55,17 @@ GoRouter appRouter(AppRouterRef ref) {
       GoRoute(
         path: RouteNames.products,
         builder: (context, state) => const ProductsScreen(),
+        routes: [
+          GoRoute(
+            name: RouteNames.productDetail,
+            path: ':id',
+            builder: (context, state) {
+              final id = int.parse(state.pathParameters['id']!);
+              final product = state.extra as Product?;
+              return ProductDetailScreen(id: id, initialProduct: product);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: RouteNames.cart,
