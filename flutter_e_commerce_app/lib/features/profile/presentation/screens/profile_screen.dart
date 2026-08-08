@@ -13,6 +13,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileNotifierProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
@@ -23,58 +24,71 @@ class ProfileScreen extends ConsumerWidget {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 800),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      child: Icon(Icons.person, size: 50),
+                    CircleAvatar(
+                      radius: 56,
+                      backgroundColor: theme.colorScheme.primaryContainer,
+                      child: Icon(
+                        Icons.person_outline, 
+                        size: 56, 
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     Text(
                       '${profile.name.firstname} ${profile.name.lastname}'.toUpperCase(),
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onSurface,
+                      ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 48),
                     _buildInfoCard(
                       context,
                       title: 'Contact Information',
                       children: [
-                        _buildInfoRow(Icons.email, 'Email', profile.email),
-                        const Divider(),
-                        _buildInfoRow(Icons.phone, 'Phone', profile.phone),
+                        _buildInfoRow(context, Icons.email_outlined, 'Email', profile.email),
+                        Divider(height: 32, color: theme.colorScheme.outlineVariant),
+                        _buildInfoRow(context, Icons.phone_outlined, 'Phone', profile.phone),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     _buildInfoCard(
                       context,
                       title: 'Address',
                       children: [
                         _buildInfoRow(
-                          Icons.location_on,
+                          context,
+                          Icons.location_on_outlined,
                           'Location',
                           '${profile.address.number} ${profile.address.street}\n${profile.address.city}, ${profile.address.zipcode}',
                         ),
                       ],
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 48),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(16),
-                        backgroundColor: Colors.red[50],
-                        foregroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: theme.colorScheme.errorContainer,
+                        foregroundColor: theme.colorScheme.onErrorContainer,
+                        elevation: 0,
                       ),
                       icon: const Icon(Icons.logout),
-                      label: const Text('Logout'),
+                      label: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold)),
                       onPressed: () async {
                         await ref.read(authProvider.notifier).logout();
                         if (!context.mounted) return;
                         
                         if (ref.read(authProvider).hasError) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Failed to logout. Please try again.')),
+                            SnackBar(
+                              content: const Text('Failed to logout. Please try again.'),
+                              backgroundColor: theme.colorScheme.error,
+                            ),
                           );
                         }
                       },
@@ -100,20 +114,23 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildInfoCard(BuildContext context, {required String title, required List<Widget> children}) {
+    final theme = Theme.of(context);
+    
     return Card(
-      elevation: 2,
+      clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             ...children,
           ],
         ),
@@ -121,37 +138,44 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 20, color: Colors.grey[600]),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
+  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value) {
+    final theme = Theme.of(context);
+    
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(12),
           ),
-        ],
-      ),
+          child: Icon(icon, size: 24, color: theme.colorScheme.onSurfaceVariant),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
