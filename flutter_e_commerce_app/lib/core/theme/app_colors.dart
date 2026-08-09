@@ -19,4 +19,5 @@ class AppColors {
   // Status Colors
   static const Color error = Color(0xFFEF4444);
   static const Color success = Color(0xFF10B981);
+  static const Color brandGreen = Color(0xFF1B5E20); // Dark forest green for Mesob Gebeya branding
 }
