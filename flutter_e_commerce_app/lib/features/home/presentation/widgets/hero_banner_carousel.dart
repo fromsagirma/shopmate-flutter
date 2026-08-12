@@ -120,9 +120,11 @@ class _HeroBannerCarouselState extends ConsumerState<HeroBannerCarousel> {
             ),
           ),
           // Dark overlay (keeps text legible)
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+          Positioned.fill(
+            child: Container(
+               decoration: BoxDecoration(
+                 color: const Color.fromRGBO(0, 0, 0, 0.4),
+               ),
             ),
           ),
           // Text & button overlay – same as original banner.
