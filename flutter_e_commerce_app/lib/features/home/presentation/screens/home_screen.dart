@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/custom_button.dart';
 
+import '../../../cart/presentation/providers/cart_computed_providers.dart';
+
+import '../widgets/category_list_section.dart';
+import '../widgets/featured_products_section.dart';
+import '../widgets/special_offer_section.dart';
+import '../widgets/hero_banner_carousel.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -64,107 +70,137 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(24),
+            bottomRight: Radius.circular(24),
+          ),
+        ),
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Icons.menu, color: AppColors.brandGreen),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
             );
-          }
+          },
         ),
-        title: Text(
-          'Mesob Gebeya',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.brandGreen,
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                // VERIFY this exact filename (case + spacing) against
+                // what's actually registered in pubspec.yaml and on disk
+                // before running.
+                'assets/images/Mesob_Market.jpg',
+                width: 32,
+                height: 32,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Fallback so a bad path shows a visible icon instead
+                  // of silently failing / leaving blank space.
+                  return const Icon(
+                    Icons.storefront,
+                    size: 32,
+                    color: AppColors.brandGreen,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Mesob Gebeya',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.brandGreen,
+                fontFamily: 'serif',
+              ),
+            ),
+          ],
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              context.go(RouteNames.products);
+            icon: const Icon(Icons.notifications_none, color: Colors.black87),
+            onPressed: () {},
+          ),
+          Consumer(
+            builder: (context, ref, child) {
+              final cartItemCount = ref.watch(cartItemCountProvider);
+              return IconButton(
+                icon: Badge(
+                  label: Text('$cartItemCount'),
+                  isLabelVisible: cartItemCount > 0,
+                  backgroundColor: AppColors.brandGreen,
+                  child: const Icon(Icons.shopping_cart_outlined,
+                      color: Colors.black87),
+                ),
+                onPressed: () {
+                  context.go(RouteNames.cart);
+                },
+              );
             },
           ),
+          const SizedBox(width: 8),
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/home-backg.png'),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black26,
-                  BlendMode.darken,
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Card(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 48.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Mesob\nGebeya',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.displayMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.brandGreen,
-                          height: 1.1,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Small diamond divider
-                      Icon(Icons.diamond, size: 12, color: Colors.amber.shade700),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Discover the\nEssence of\nEthiopia',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Shop our curated collection of\nauthentic artisanal crafts, textiles, and\ncoffee.',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey.shade700,
-                          height: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 48),
-                      CustomButton(
-                        onPressed: () {
-                          context.go(RouteNames.products);
-                        },
-                        text: 'Shop Now',
-                        backgroundColor: AppColors.brandGreen,
-                      ),
-                    ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                readOnly: true,
+                onTap: () {
+                  context.go(RouteNames.products);
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search for products, brands and more...',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: const Icon(Icons.qr_code_scanner),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 ),
               ),
             ),
-          ),
-        ],
+
+            // Hero Banner Carousel
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: const HeroBannerCarousel(),
+            ),
+
+            const SizedBox(height: 24),
+
+            const CategoryListSection(),
+
+            const SizedBox(height: 16),
+
+            const SpecialOfferSection(),
+
+            const SizedBox(height: 24),
+
+            const FeaturedProductsSection(),
+
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }
